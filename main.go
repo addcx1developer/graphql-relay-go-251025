@@ -1,6 +1,11 @@
 package main
 
-import "github.com/graphql-go/graphql"
+import (
+	"net/http"
+
+	"github.com/graphql-go/graphql"
+	"github.com/graphql-go/handler"
+)
 
 var queryType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
@@ -18,4 +23,13 @@ var Schema, _ = graphql.NewSchema(graphql.SchemaConfig{
 	Query: queryType,
 })
 
-func main() {}
+func main() {
+	h := handler.New(&handler.Config{
+		Schema: &Schema,
+		Pretty: true,
+	})
+
+	http.Handle("/graphql", h)
+
+	http.ListenAndServe(":8080", nil)
+}
